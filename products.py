@@ -1,14 +1,23 @@
 # -*- coding:utf-8 -*-
-# 讀取檔案
+import os
+
 products = []
-with open('products.csv', 'r', encoding = 'utf-8') as f:
-	for line in f:
-		if '商品,價格' in line:
-			continue #繼續 跳到下一回圈所以8、9行就不會執行
-		# 去除換行符號再進行切割
-		name, price = line.strip().split(',')
-		products.append([name, price])
-print(products)
+if os.path.isfile('products.csv'):# 檢查檔案在不在
+	print('ya! 找到檔案了!')
+
+	# 讀取檔案
+	with open('products.csv', 'r', encoding = 'utf-8') as f:
+		for line in f:
+			if '商品,價格' in line:
+				continue # 繼續 跳到下一回圈所以8、9行就不會執行
+			# 去除換行符號再進行切割
+			name, price = line.strip().split(',')
+			products.append([name, price])
+	print(products)
+
+else:
+	print('找不到檔案....')
+
 
 # 讓使用者輸入
 while True:
@@ -24,9 +33,8 @@ print(products)
 for p in products:
 	print(p[0], '的價格是', p[1]) 
 
-#寫入檔案					#加入編碼修正檔案內有編碼的問題
+#寫入檔案
 with open ('products.csv', 'w', encoding = 'utf-8') as f:
-	f.write('商品,價格\n')	#加入欄位
+	f.write('商品,價格\n') #加入欄位
 	for p in products:
 		f.write(p[0] + ',' + str(p[1]) + '\n')
-					#將p[1]轉回為字串才能與+做合併
