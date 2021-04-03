@@ -1,12 +1,15 @@
+#新增使用套件效果(缺點：cmd要全寬不然會顯示有誤)
+import time, progressbar
+
 #篩選資料範例
 data = []
 cont = 0
+bar = progressbar.ProgressBar(max_value = 1000000)
 with open('reviews.txt', 'r') as f:
 	for line in f:
 		data.append(line)
 		cont += 1 
-		if cont % 10000 == 0: #每10000筆再印出來
-			print(len(data))
+		bar.update(cont)
 print('檔案讀取完了, 總共有', len(data), '筆資料') #有幾筆資料
 
 
@@ -41,6 +44,7 @@ good = [d for d in data if 'good' in d]
 
 
 #文字計數
+start_tim = time.time()
 wc = {} #word_count dict
 for d in data:
 	words = d.split()
@@ -53,6 +57,8 @@ for d in data:
 for word in wc:
 	if wc[word] > 1000000:
 		print(word, wc[word])
+end_time = time.time()
+print('花了', end_time - start_tim, 'seconds.')
 
 
 #print(len(wc)) 一百萬筆留言總長度
