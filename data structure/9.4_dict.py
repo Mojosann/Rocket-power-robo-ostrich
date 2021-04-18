@@ -18,7 +18,7 @@ for line in handle:
 	else:
 	     mail_dict[mail] = mail_dict[mail]+1
 			
-#max_sending = max([mail_dict[mail] for mail in mail_dict])
+# max_sending = max([mail_dict[mail] for mail in mail_dict])
 for key, value in mail_dict.items():
     if value == max(mail_dict.values()):
         max_key = key
