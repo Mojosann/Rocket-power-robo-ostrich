@@ -10,9 +10,9 @@ fh = open(fname)
 lst = []
 
 for line in fh:
-	line = line.strip()
-	words = line.split(' ')
-	for word in words:
+    line = line.strip()
+    words = line.split(' ')
+        for word in words:
 		if word not in lst:
 			lst.append(word)
 
