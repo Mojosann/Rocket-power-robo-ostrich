@@ -8,18 +8,19 @@ handle = open(name, 'r')
 
 mail_dict = {}
 for line in handle:
-    if line.startswith('From '):
-	line = line.strip('\n')
-	mail = line.split(' ')[1]
-	#print(mail)
-	count = 0
-	if mail_dict.get(mail) == None:
-	     mail_dict[mail] = 1
-	else:
-	     mail_dict[mail] = mail_dict[mail]+1
+	if line.startswith('From '):l
+		ine = line.strip('\n')
+		mail = line.split(' ')[1]
+		#print(mail)
+		count = 0
+		if mail_dict.get(mail) == None:
+		     mail_dict[mail] = 1
+		else:
+		     mail_dict[mail] = mail_dict[mail]+1
 			
 # max_sending = max([mail_dict[mail] for mail in mail_dict])
+
 for key, value in mail_dict.items():
-    if value == max(mail_dict.values()):
-        max_key = key
+	if value == max(mail_dict.values()):
+		max_key = key
 print(max_key, mail_dict[max_key])
