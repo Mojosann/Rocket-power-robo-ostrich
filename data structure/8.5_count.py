@@ -11,10 +11,10 @@ fo = open(filename, 'r')
 count = 0
 
 for line in fo:
-	if line.startswith('From '):
-		line = line.strip('\n')
-		mail = line.split(' ')[1]
-		print(mail)
-		count += 1
+    if line.startswith('From '):
+        line = line.strip('\n')
+	mail = line.split(' ')[1]
+	print(mail)
+	count += 1
 
 print("There were", count, "lines in the file with From as the first word")
