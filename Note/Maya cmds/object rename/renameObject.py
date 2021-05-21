@@ -66,6 +66,10 @@ def rename():
 		else:
 			suffix = 'grp'
 
+		# if obj already rename, dont rename again
+		if obj.endswith(suffix):
+			continue
+
 		# Now we need to construct the new name
 		newName = shortName+"_"+suffix
 
