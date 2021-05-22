@@ -3,27 +3,49 @@
 
 from maya import cmds
 
-def rename():
-	
-	selection = cmds.ls(selection=True)
+# 創造帶有shape_name的字典
+SUFFIXES = {'mesh': 'geo', 'joint': 'jnt', 'camera': None, 'ambientLight': 'lgt'}
 
-	# dag = dag obj 意思是出現在outliner上的所有而且沒有被隱藏
-	# long = full path of the object
-	if len(selection) == 0:
-		selection = cmds.ls(dag=True, long=True)
+# 創造預設值
+DEFAULT_SUFFIX = 'grp'
 
-	# 因為selection是list, 有sort這個method
+
+def rename(selection=False):
+
+	'''
+	This function will rename any object to have the correct suffix.
+
+	Args:
+		selection: whether or not we use the surrent selection
+	Returns:
+		A list of all the objects we operated on
+	'''
+
+
+	objects = cmds.ls(selection=True, dag=True, long=True)
+
+	# This function connot run if there is no selection and no objects
+	# 例外處理 如果selection為True, 但並沒有選擇任何obj就會出現錯誤
+
+	if selection and not objects:
+
+		# raise像是提出投訴: raise a complaint
+		# 這裡的xxError可以查看python doc了解
+		raise RuntimeError('You dont have anything selected, How dare you?')
+
+	# 因為objects是list, 有sort這個method
 	# key: 由短到長排列     加reverse可以改由長到短排列
-	selection.sort(key=len, reverse=True)
+	objects.sort(key=len, reverse=True)
 
 
 	# 隨便選取一個東西然後印出來
 	# 如果甚麼都不選 比較印出結果
-	print selection
+	#print objects
 
 
 	# 取值
-	for obj in selection:
+	for obj in objects:
+
 		shortName = obj.split('|')[-1]
 		#print cmds.objectType(obj)
 
@@ -33,7 +55,7 @@ def rename():
 		# 會印出shape name, 因為每一個obj都有shape的子層級(underworld)
 		# 但也有可能為空值None(比如物件是一個empty grp), 於是在下方加個or []直接變成空清單
 		children = cmds.listRelatives(obj, children=True, fullPath=True) or []
-		print children
+		#print children
 		
 		
 		# 確保只有一個才能判斷物件型別
@@ -45,33 +67,31 @@ def rename():
 			# Now we get the object type of the current object
 			objType = cmds.objectType(obj) # 變成爸爸
 			
-		print objType # mesh / transform / nurbsSurface...
-		 
-		 
-		# suffix 後綴詞 
-		# We use a bunch of if statements to find the suffix we want to add
-		if objType == "mesh":
-			suffix = 'geo'
-			   	
-		elif objType == "joint":
-			suffix = 'jnt'
+		#print objType # mesh / transform / nurbsSurface...
+		
 
-		elif objType == 'camera':
-	   	
-			# In the case of the camera, we will say to continue.
-			# Continue means that we will continue on to the next item in the list and skip the rest of the logic for this one
-			print "Skipping camera"
+		# 如果取不到objType, 預設值為DEFAULT_SUFFIX
+		suffix = SUFFIXES.get(objType, DEFAULT_SUFFIX) 
+		
+		# camera = None, because None not belongs to True or False
+		if not suffix:
 			continue
-			     
-		else:
-			suffix = 'grp'
 
 		# if obj already rename, dont rename again
-		if obj.endswith(suffix):
+		# maybe帶有suffix的物件是要更名的所以要確定有_
+		if obj.endswith('_' + suffix):
+			
+			# continue就可以跳過以下步驟
 			continue
 
 		# Now we need to construct the new name
-		newName = shortName+"_"+suffix
+		newName = '%s_%s' % (shortName, suffix)
 
 		# Now tell it to rename the obj to the new name with the suffix
 		cmds.rename(obj, newName)
+
+		index = objects.index(obj)
+		objects[index] = obj.replace(shortName, newName)
+
+	# 程式執行結束 期望吐出一個object_list
+	return objects
